@@ -108,8 +108,8 @@ def update_bssid(network, bssid):
         end = contents.index('\n', start)
         contents = contents[:start] + bssid + contents[end:]
     else:
-        contents = contents.replace('[802-11-wireless]',
-            '[802-11-wireless]\nbssid=%s' % bssid)
+        contents = contents.replace('[wifi]',
+            '[wifi]\nbssid=%s' % bssid)
     with open(path, 'w') as fobj:
         fobj.write(contents)
 
@@ -143,7 +143,7 @@ def disable_11n():
 def connect_nuwave(interface):
     print 'Temporarily disabling wifi'
     try:
-        netman_cmd(['nm', 'enable', 'false'])
+        netman_cmd(['radio', 'wifi', 'off'])
     except (Exception), err:
         if 'Already disabled' not in str(err):
             raise
@@ -168,7 +168,7 @@ def connect_nuwave(interface):
     print 'Updating BSSID to: %s' % ap['bssid']
     update_bssid('NUwave', ap['bssid'])
     print 'Re-enabling NetworkManager'
-    netman_cmd(['nm', 'enable', 'true'])
+    netman_cmd(['radio', 'wifi', 'on'])
 
 def main():
     """
